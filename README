@@ -13,17 +13,18 @@ Usage
 
 1. $ script/generate s3_swf_upload
 
-2. configure amazon_s3.yml, you need put a crossdomain.xml in your bucket and make it public-read.
+2. configure amazon_s3.yml, and run below two tasks to create bucket and crossdomain.xml:
 
-3. Upload a crossdomain.xml in your bucket and make it public-read.
+  $ rake s3:make_bucket
+  $ rake s3:make_crossdomain
 
-4. init s3_swf object:
+3. init s3_swf object:
 
   <%= s3_swf_upload_tag %>
 
-5. when you click upload, your file will be upload to http://bucket.s3.amazonasw.com/s3_swf/ by default.
+4. when you click upload, your file will be upload to http://bucket.s3.amazonasw.com/s3_swf/ by default.
 
-6. if you want to custom its behavior, here's a more complex example:
+5. if you want to custom its behavior, here's a more complex example:
 
   <%= s3_swf_upload_tag(:width => 310, 
         :height => 40, 
