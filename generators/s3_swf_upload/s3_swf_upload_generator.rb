@@ -12,6 +12,7 @@ class S3SwfUploadGenerator < Rails::Generator::Base
       m.file 'initializer.rb', 'config/initializers/s3_upload.rb'
       m.file 's3_upload.js', 'public/javascripts/s3_upload.js'
       m.file 's3_upload.swf', 'public/s3_upload.swf'
+      FileUtils.mkdir_p('lib/tasks')
       m.file 's3_swf.rake',   'lib/tasks/s3_swf.rake'
       m.file 'crossdomain.xml', 'lib/tasks/crossdomain.xml'
       m.route_resources 's3_uploads'
