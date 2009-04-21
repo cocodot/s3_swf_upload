@@ -9,12 +9,14 @@ module S3SwfUpload
       canceled     = options[:canceled] || ''
       prefix     = options[:prefix] || 's3_swf'
       
+      @@count ||= 1
+      
       out = ""
       out << %(
         <script type="text/javascript" src="/javascripts/s3_upload.js"></script>
 
         <script type="text/javascript">
-            s3_swf = s3_swf_init('s3_upload', {
+            var s3_swf#{@@count} = s3_swf_init('s3_upload#{@@count}', {
               width:  #{width},
               height: #{height},
               onSuccess: function(){
@@ -32,12 +34,16 @@ module S3SwfUpload
             });
         </script>
 
-        <div id="s3_upload">
+        <div id="s3_upload#{@@count}">
           Please <a href="http://www.adobe.com/go/getflashplayer">Update</a> your Flash Player to Flash v9.0.1 or higher...
         </div>
 
-        <a href="#" onclick="s3_swf.upload('#{prefix}/')">Upload</a>
+        <a href="#" onclick="s3_swf#{@@count}.init(); s3_swf#{@@count}.upload('#{prefix}/')">Upload</a>
       )
+      
+      @@count += 1
+      @@count = 1 if @@count > 100
+      out
     end
   end
 end
