@@ -12,21 +12,17 @@
 			private var mimeMap:MimeTypeMap = new MimeTypeMap();
 			private var options:S3UploadOptions = new S3UploadOptions();
 			private var fileReference:FileReference;
-			
+
 			private function registerCallbacks():void {
 			    if (ExternalInterface.available) {
-			      ExternalInterface.addCallback("init", init);
-			      ExternalInterface.addCallback("upload", upload);
-			      ExternalInterface.call('s3_swf.init');
+			    	ExternalInterface.addCallback("init", init);
+			    	ExternalInterface.addCallback("upload", upload);
+				  	options.SignatureQueryURL = Application.application.parameters.signature_query_url;
+				  	options.onSuccessCall     = Application.application.parameters.id + '.onSuccess';
+				  	options.onFailedCall      = Application.application.parameters.id + '.onFailed';
+				  	options.onSelectedCall    = Application.application.parameters.id + '.onSelected';
+				  	options.onCancelCall      = Application.application.parameters.id + '.onCancel';
 			    }
-			}
-			
-			private function init(url:String, onSuccess:String="", onFailed:String="", onSelected:String="", onCancel:String=""):void {
-			    options.SignatureQueryURL = url;
-			    if (onSuccess  != "") { options.onSuccessCall  = onSuccess;  }
-			    if (onFailed   != "") { options.onFailedCall   = onFailed;   }
-			    if (onSelected != "") { options.onSelectedCall = onSelected; }
-			    if (onCancel   != "") { options.onCancelCall   = onCancel;   }
 			}
 			
 			private function browser():void {
