@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="registerCallbacks();" layout="absolute" height="35" width="300">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" backgroundAlpha="0" creationComplete="registerCallbacks();" layout="absolute">
 
     <mx:Script>
     	<![CDATA[
@@ -12,22 +12,30 @@
 			private var mimeMap:MimeTypeMap = new MimeTypeMap();
 			private var options:S3UploadOptions = new S3UploadOptions();
 			private var fileReference:FileReference;
-
+			
 			private function registerCallbacks():void {
 			    if (ExternalInterface.available) {
-			    	ExternalInterface.addCallback("init", init);
-			    	ExternalInterface.addCallback("upload", upload);
-				  	options.SignatureQueryURL = Application.application.parameters.signature_query_url;
-				  	options.onSuccessCall     = Application.application.parameters.id + '.onSuccess';
-				  	options.onFailedCall      = Application.application.parameters.id + '.onFailed';
-				  	options.onSelectedCall    = Application.application.parameters.id + '.onSelected';
-				  	options.onCancelCall      = Application.application.parameters.id + '.onCancel';
+			      ExternalInterface.addCallback("init", init);
+			      ExternalInterface.addCallback("upload", upload);
+			      ExternalInterface.call('s3_swf.init');
 			    }
+			}
+			
+			private function init(url:String,
+			    onSuccess:String="", onFailed:String="",
+			    onSelected:String="", onCancel:String="", 
+                            initialMessage:String=""):void {
+			    options.SignatureQueryURL = url;
+                            userMessage.text = initialMessage;
+			    if (onSuccess  != "") { options.onSuccessCall  = onSuccess;  }
+			    if (onFailed   != "") { options.onFailedCall   = onFailed;   }
+			    if (onSelected != "") { options.onSelectedCall = onSelected; }
+			    if (onCancel   != "") { options.onCancelCall   = onCancel;   }
 			}
 			
 			private function browser():void {
 			    this.fileReference = new FileReference();
-			    
+			    userMessage.setStyle("color","#222222");
 			    // setup file reference event handlers
 			    fileReference.addEventListener(Event.CANCEL, function(event:Event):void {
 			        // TODO: cancel the upload.
@@ -36,7 +44,7 @@
 			    fileReference.addEventListener(Event.SELECT, function(event:Event):void {
 			        // set options.FileName
 			        options.FileName = fileReference.name.replace(/^.*(\\|\/)/gi, '').replace(/[^A-Za-z0-9\.\-]/gi, '_');
-			        textInput.text   = options.FileName;
+			        userMessage.text   = options.FileName;
 			        
 			        // set options:FileSize
 			        options.FileSize = fileReference.size.toString();
@@ -47,7 +55,7 @@
 			        options.ContentType = mimeMap.getMimeType(FileExtension);
 			        
 			        trace(options.onSelectedCall);
-			        ExternalInterface.call(options.onSelectedCall, options.FileName, options.FileSize);
+			        ExternalInterface.call(options.onSelectedCall, options.FileName, options.FileSize, options.ContentType);
 			    });
 			    
 			    fileReference.browse();
@@ -55,10 +63,10 @@
 			
 			private function upload(prefixPath:String = ""):void {
 			    
-			    // return if user not selected any file
+			    // return if user has not selected any file
 			    if (options.FileSize == null) {
-			    	trace(options.onSuccessCall);
-			        ExternalInterface.call(options.onSuccessCall);
+			    	trace(options.onFailedCall);
+			        ExternalInterface.call(options.onFailedCall);
 			        return;
 			    }
 			    
@@ -105,16 +113,26 @@
 			    options.acl            = xml.acl;
 			    options.Expires        = xml.expirationdate;
 			    options.Secure         = xml.https;
-			    
+				
+				if (xml.errorMessage!="")
+				{
+				 	uploadProgressBar.visible = false;
+				  	selectButton.visible = true;
+					userMessage.visible = true;
+				  	userMessage.text = "Error: " + xml.errorMessage;
+					userMessage.setStyle("color","#770000");
+					ExternalInterface.call(options.onFailedCall);
+					return;
+				}
 			    // ===================== //
 			    // Start post file to S3 //
 			    // ===================== //
 			    var request:S3UploadRequest = new S3UploadRequest(options);
 			    
 			    request.addEventListener(Event.OPEN, function(event:Event):void {
-			        textInput.text = "Uploading...";
+			        userMessage.text = "";
 			        uploadProgressBar.visible = true;
-			        selectButton.enabled = false;
+			        selectButton.visible = false;
 			        trace(event);
 			    });
 			    request.addEventListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void {
@@ -124,26 +142,26 @@
 			    });
 			    request.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
 			        uploadProgressBar.visible = false;
-			        selectButton.enabled = true;
-			        textInput.text = "Upload error!";
+			        selectButton.visible = true;
+			        userMessage.text = "Upload Error, please retry.";
 			        trace(options.onFailedCall);
 			        ExternalInterface.call(options.onFailedCall);
 			        trace(event);
 			    });
 			    request.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(event:SecurityErrorEvent):void {
 			        uploadProgressBar.visible = false;
-			        selectButton.enabled = true;
-			        textInput.text = "Upload error!";
+			        selectButton.visible = true;
+			        userMessage.text = "Upload error, Access denied.";
 			        trace(options.onFailedCall);
 			        ExternalInterface.call(options.onFailedCall);
 			        trace(event);
 			    });
 			    request.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, function(event:Event):void {
 			        uploadProgressBar.visible = false;
-			        selectButton.enabled = true;
-			        textInput.text = "Upload complete!";
+			        //selectButton.visible = true;
+			        userMessage.text = "Upload complete!";
 			        trace(options.onSuccessCall);
-			        ExternalInterface.call(options.onSuccessCall);
+			        ExternalInterface.call(options.onSuccessCall, options.FileName);
 			        trace(event);
 			    });
 			    
@@ -151,8 +169,9 @@
 			        request.upload(fileReference);
 			    } catch(e:Error) {
 			        uploadProgressBar.visible = false;
-			        selectButton.enabled = true;
-			        textInput.text = "Upload exception!";
+			        selectButton.visible = true;
+			        userMessage.text = "" + e;
+				userMessage.setStyle("color","#770000");
 			        trace("An error occurred: " + e);
 			    }
 			}
@@ -176,8 +195,8 @@
     	]]>
     </mx:Script>
     
-    <mx:Label x="10" y="10" id="textInput" color="#FFFFFF" fontWeight="bold" text="Click the Select File Button... "/>
-    <mx:Button x="227" y="7" label="Select" click="browser()" id="selectButton"/>
-    <mx:ProgressBar x="10" y="7" width="200" height="20" labelPlacement="center" id="uploadProgressBar" visible="false" mode="manual" label="Uploading..."/>
+    <mx:Label x="100" y="10" id="userMessage" color="#222222" fontSize="12" text=""/>
+    <mx:Button x="10" y="7" label="Browse..." click="browser()" id="selectButton"/>
+    <mx:ProgressBar x="1" y="7" width="486" height="20" labelPlacement="center" id="uploadProgressBar" visible="false" mode="manual" label="Uploading..."/>
     
 </mx:Application>

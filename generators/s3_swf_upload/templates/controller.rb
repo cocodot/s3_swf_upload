@@ -10,8 +10,9 @@ class S3UploadsController < ApplicationController
     key             = params[:key]
     content_type    = params[:content_type]
     file_size       = params[:file_size]
-    acl             = 'private'
+    acl             = S3SwfUpload::S3Config.acl
     https           = 'false'
+    error_message   = "Selected file is too large." if file_size.to_i >  S3SwfUpload::S3Config.max_file_size
     expiration_date = 1.hours.from_now.strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
     policy = Base64.encode64(
@@ -38,7 +39,8 @@ class S3UploadsController < ApplicationController
           :accesskeyid     => access_key_id,
           :acl             => acl,
           :expirationdate  => expiration_date,
-          :https           => https
+          :https           => https,
+          :errorMessage   => error_message.to_s
         }.to_xml
       }
     end
