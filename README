@@ -27,6 +27,9 @@ Usage
    
 3. Upload a crossdomain.xml in your bucket and make it public-read.
 
+   You can find what you need in generators/s3-swf-upload/templates in
+   the plugin!
+
 4. init s3_swf object:
 
   <%= s3_swf_upload_tag %>
