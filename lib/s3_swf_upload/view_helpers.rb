@@ -7,7 +7,7 @@ module S3SwfUpload
       failed     = options[:failed]  || ''
       selected   = options[:selected]  || ''
       canceled   = options[:canceled] || ''
-      prefix     = options[:prefix] || 's3_swf'
+      prefix     = options[:prefix] || ''
       upload     = options[:upload] || 'Upload' 
       initial_message    = options[:initial_message] || 'Select file to upload...'
 

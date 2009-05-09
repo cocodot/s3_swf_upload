@@ -21,7 +21,9 @@ Usage
 
   <%= s3_swf_upload_tag %>
 
-4. when you click upload, your file will be upload to http://bucket.s3.amazonasw.com/s3_swf/ by default.
+4. when you click upload, your file will be upload to http://bucket.s3.amazonasw.com/ by default.
+
+   IE the default prefix is '' (no prefix)
 
 5. if you want to customise its behavior, here's a more complex example:
 
@@ -30,8 +32,10 @@ Usage
         :success => 'alert("success");',
         :failed => 'alert("failed");',
         :selected => 'alert("selected");',
-        :prefix => 'my_bucket_prefix',
+        :prefix => 'prefix_in_bucket',
         :upload => 'Press Here To Activate Upload') 
   %>
+
+   In this case, files will be uploaded to http://bucket.s3.amazonasw.com/prefix_in_bucket/filename
 
 Copyright (c) 2008 elctech, released under the MIT license
