@@ -166,6 +166,7 @@
 			    });
 			    
 			    try {
+                                userMessage.text = "Uploading commenced...";
 			        request.upload(fileReference);
 			    } catch(e:Error) {
 			        uploadProgressBar.visible = false;
@@ -177,6 +178,7 @@
 			}
 			
 			private function openHandler(event:Event):void {
+                           userMessage.text = "Preparing for upload...";
 			    trace("openHandler: " + event);
 			}
 			private function progressHandler(event:ProgressEvent):void {
@@ -184,12 +186,18 @@
 			}
 			private function securityErrorHandler(event:SecurityErrorEvent):void {
 			    trace("securityErrorHandler: " + event);
+			    trace(options.onFailedCall);
+                            userMessage.text = "Whoa - something went really wrong preparing for upload: securityErrorHandler: " + event;
+			    ExternalInterface.call(options.onFailedCall);
 			}
 			private function httpStatusHandler(event:HTTPStatusEvent):void {
 			    trace("httpStatusHandler: " + event);
 			}
 			private function ioErrorHandler(event:IOErrorEvent):void {
 			    trace("ioErrorHandler: " + event);
+			    trace(options.onFailedCall);
+                            userMessage.text = "Whoa - something went really wrong preparing for upload: ioErrorHandler: " + event;
+			    ExternalInterface.call(options.onFailedCall);
 			}
 			
     	]]>

@@ -1,6 +1,17 @@
 require 'base64'
 
 class S3UploadsController < ApplicationController
+
+  # The plugin flash script has to be able to access this controller, so don't block it with authentication!
+  # You can delete the following line if you have no authentication in your app.
+
+  skip_before_filter  :<*** your authentication filter, if any, goes here!>, [:only => "index"]
+
+  # --- no code for modification below here ---
+
+  # Sigh.  OK that's not completely true - you might want to look at https and expiration_date below.
+  #        Possibly these should also be configurable from S3Config...
+
   skip_before_filter :verify_authenticity_token
   include S3SwfUpload::Signature
   
