@@ -28,13 +28,13 @@ module S3SwfUpload
               width:  #{width},
               height: #{height},
               initialMessage: '#{initial_message}',
-              onSuccess: function(filename, filesize){
+              onSuccess: function(filename, filesize, contenttype){
                 #{success}
               },
               onFailed: function(status){
                 #{failed}
               },
-              onFileSelected: function(filename, size){
+              onFileSelected: function(filename, filesize, contenttype){
                 #{selected}
               },
             });
