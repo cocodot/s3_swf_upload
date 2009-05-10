@@ -161,7 +161,7 @@
 			        //selectButton.visible = true;
 			        userMessage.text = "Upload complete!";
 			        trace(options.onSuccessCall);
-			        ExternalInterface.call(options.onSuccessCall, options.FileName);
+			        ExternalInterface.call(options.onSuccessCall, options.FileName, options.FileSize, options.ContentType);
 			        trace(event);
 			    });
 			    
