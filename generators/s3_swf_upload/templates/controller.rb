@@ -23,8 +23,17 @@ class S3UploadsController < ApplicationController
     file_size       = params[:file_size]
     acl             = S3SwfUpload::S3Config.acl
     https           = 'false'
-    error_message   = "Selected file is too large." if file_size.to_i >  S3SwfUpload::S3Config.max_file_size
+
+    max_file_size = S3SwfUpload::S3Config.max_file_size
+    max_file_MB   = (max_file_size/1024/1024).to_i
+
+    error_message   = "Selected file is too large (max is #{max_file_size}MB)" if file_size.to_i >  S3SwfUpload::S3Config.max_file_size
+
     expiration_date = 1.hours.from_now.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+
+    if params[:do_checks] == "1"
+      error_message = self.s3_swf_upload_file_error?(key) 
+    end
 
     policy = Base64.encode64(
 "{
