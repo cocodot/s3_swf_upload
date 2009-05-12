@@ -18,6 +18,8 @@ function s3_swf_init(id, options)
   onSuccess       = (options.onSuccess == undefined) ? function(){} : options.onSuccess
   onFailed        = (options.onFailed == undefined) ? function(){} : options.onFailed
   onCancel        = (options.onCancel == undefined) ? function(){} : options.onCancel
+  initialMessage  = (options.initialMessage == undefined) ? "js" : options.initialMessage
+  doChecks        = (options.doChecks == undefined) ? "0" : options.doChecks
 
   swfobject.embedSWF("/s3_upload.swf", id, width, height, version);
 
@@ -25,7 +27,7 @@ function s3_swf_init(id, options)
   
   s3_swf = {
     obj: function() { return document[id]; },
-    init: function() { this.obj().init(signature_url); },
+    init: function() { this.obj().init(signature_url, initialMessage, doChecks); },
     upload: function(prefix) { this.obj().upload(prefix); },
     onSuccess: onSuccess,
     onFailed: onFailed,
