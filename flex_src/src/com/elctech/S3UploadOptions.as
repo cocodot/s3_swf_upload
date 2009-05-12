@@ -29,6 +29,7 @@ package com.elctech {
         public var FileName:String;
         public var FileSize:String;
         public var SignatureQueryURL:String;
+        public var doChecks:String;         /* A flag indicating if the s3_uploads_controller should check the file name */
 
         public var onSuccessCall:String  = "s3_swf.onSuccess";
         public var onFailedCall:String   = "s3_swf.onFailed";
