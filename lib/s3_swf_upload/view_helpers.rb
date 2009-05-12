@@ -10,6 +10,11 @@ module S3SwfUpload
       prefix     = options[:prefix] || ''
       upload     = options[:upload] || 'Upload' 
       initial_message    = options[:initial_message] || 'Select file to upload...'
+      do_checks = options[:do_checks] || "0"
+
+      if do_checks != "1" && do_checks != "0"
+        raise "Ooops, do_checks has to be either '0' or '1' (a string)"
+      end
 
       prefix = prefix + "/" unless prefix == ""
 
@@ -23,11 +28,13 @@ module S3SwfUpload
         @include_s3_upload = true
       end
 
-      out << %(<script type="text/javascript">
+      out << %(<a name="uploadform#{@count}"></a>
+            <script type="text/javascript">
             var s3_swf#{@count} = s3_swf_init('s3_swf#{@count}', {
               width:  #{width},
               height: #{height},
               initialMessage: '#{initial_message}',
+              doChecks: '#{do_checks}',
               onSuccess: function(filename, filesize, contenttype){
                 #{success}
               },
@@ -45,7 +52,7 @@ module S3SwfUpload
         </div>
 
         <div class="s3-swf-upload-link">
-        <a href="#" onclick="s3_swf#{@count}.upload('#{prefix}')">#{upload}</a>
+        <a href="#uploadform#{@count}" onclick="s3_swf#{@count}.upload('#{prefix}')">#{upload}</a>
         </div>
       )
       
