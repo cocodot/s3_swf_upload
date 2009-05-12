@@ -12,7 +12,6 @@
 			private var mimeMap:MimeTypeMap = new MimeTypeMap();
 			private var options:S3UploadOptions = new S3UploadOptions();
 			private var fileReference:FileReference;
-			
 			private function registerCallbacks():void {
 			    if (ExternalInterface.available) {
 			      ExternalInterface.addCallback("init", init);
@@ -21,12 +20,13 @@
 			    }
 			}
 			
-			private function init(url:String,
+			private function init(url:String, initialMessage:String="mxml", doChecks:String="0",
 			    onSuccess:String="", onFailed:String="",
-			    onSelected:String="", onCancel:String="", 
-                            initialMessage:String=""):void {
+			    onSelected:String="", onCancel:String=""
+                            ):void {
 			    options.SignatureQueryURL = url;
                             userMessage.text = initialMessage;
+                            options.doChecks = doChecks;
 			    if (onSuccess  != "") { options.onSuccessCall  = onSuccess;  }
 			    if (onFailed   != "") { options.onFailedCall   = onFailed;   }
 			    if (onSelected != "") { options.onSelectedCall = onSelected; }
@@ -65,6 +65,7 @@
 			    
 			    // return if user has not selected any file
 			    if (options.FileSize == null) {
+                                userMessage.text = 'You need to select a file!';
 			    	trace(options.onFailedCall);
 			        ExternalInterface.call(options.onFailedCall);
 			        return;
@@ -84,6 +85,7 @@
 			    variables.file_size        = options.FileSize;
 			    variables.key              = options.key;
 			    variables.content_type     = options.ContentType;
+                            variables.do_checks        = options.doChecks;
 			    
 			    request.method             = URLRequestMethod.GET;
 			    request.data               = variables;
