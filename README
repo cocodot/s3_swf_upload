@@ -8,6 +8,17 @@ Install
 
 ./script/plugin install git://github.com/GreenAsJade/s3-swf-upload-plugin.git
 
+Example
+=======
+
+There is an example app showing how to use this at
+
+  http://github.com/GreenAsJade/demo-s3-swf-upload/tree/master
+
+It's live at
+
+ http://demo-s3-swf-upload.heroku.com/
+
 Usage
 =======
 
