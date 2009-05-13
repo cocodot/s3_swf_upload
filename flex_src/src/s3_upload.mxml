@@ -163,7 +163,7 @@
 			    request.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, function(event:Event):void {
 			        uploadProgressBar.visible = false;
 			        //selectButton.visible = true;
-			        userMessage.text = "Upload complete!  Generating preview thumbnail... ";
+			        userMessage.text = "Upload complete!";
 			        trace(options.onSuccessCall);
 			        ExternalInterface.call(options.onSuccessCall, options.FileName, options.FileSize, options.ContentType);
 			        trace(event);
