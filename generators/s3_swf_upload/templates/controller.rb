@@ -29,7 +29,7 @@ class S3UploadsController < ApplicationController
 
     error_message   = "Selected file is too large (max is #{max_file_size}MB)" if file_size.to_i >  S3SwfUpload::S3Config.max_file_size
 
-    expiration_date = 1.hours.from_now.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+    expiration_date = 1.hours.from_now.utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
     if params[:do_checks] == "1"
       error_message = self.s3_swf_upload_file_error?(key) 
