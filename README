@@ -41,7 +41,10 @@ Usage
 
    or hardcode them in     config/amazon_s3.yml
 
-    The acl will default to private.
+   (The corresponding yml vars are: 
+     bucket_name, access_key_id, secret_access_key, acl, max_file_size)
+
+   The acl will default to private.
 
    Your rails app can also change bucket, acl and max file size like
    this:
