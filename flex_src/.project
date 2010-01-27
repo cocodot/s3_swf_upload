@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>s3-post-flash-upload-plugin</name>
+	<name>flex_src</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -15,4 +15,11 @@
 		<nature>com.adobe.flexbuilder.project.flexnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>bin-debug</name>
+			<type>2</type>
+			<location>/Users/gal/projects/communicator/public</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" backgroundAlpha="0" creationComplete="registerCallbacks();" layout="absolute">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" backgroundAlpha="0" creationComplete="registerCallbacks();" layout="absolute" color="black" backgroundColor="black" borderColor="#000000" themeColor="#000000">
 
     <mx:Script>
     	<![CDATA[
@@ -35,7 +35,7 @@
 			
 			private function browser():void {
 			    this.fileReference = new FileReference();
-			    userMessage.setStyle("color","#222222");
+			    userMessage.setStyle("color","#FFFFFF");
 			    // setup file reference event handlers
 			    fileReference.addEventListener(Event.CANCEL, function(event:Event):void {
 			        // TODO: cancel the upload.
@@ -55,6 +55,7 @@
 			        options.ContentType = mimeMap.getMimeType(FileExtension);
 			        
 			        trace(options.onSelectedCall);
+//			        upload();
 			        ExternalInterface.call(options.onSelectedCall, options.FileName, options.FileSize, options.ContentType);
 			    });
 			    
@@ -124,7 +125,7 @@
 				  	selectButton.visible = true;
 					userMessage.visible = true;
 				  	userMessage.text = "Error: " + xml.errorMessage;
-					userMessage.setStyle("color","#770000");
+					userMessage.setStyle("color","#FFFFFF");
 					ExternalInterface.call(options.onFailedCall);
 					return;
 				}
@@ -176,7 +177,7 @@
 			        uploadProgressBar.visible = false;
 			        selectButton.visible = true;
 			        userMessage.text = "" + e;
-				userMessage.setStyle("color","#770000");
+				userMessage.setStyle("color","#FFFFFF");
 			        trace("An error occurred: " + e);
 			    }
 			}
@@ -207,8 +208,12 @@
     	]]>
     </mx:Script>
     
-    <mx:Label x="100" y="10" id="userMessage" color="#222222" fontSize="12" text=""/>
-    <mx:Button x="10" y="7" label="Browse..." click="browser()" id="selectButton"/>
-    <mx:ProgressBar x="1" y="7" width="486" height="20" labelPlacement="center" id="uploadProgressBar" visible="false" mode="manual" label="Uploading..."/>
+    <mx:Label x="95" y="7" id="userMessage" color="#FFFFFF" fontSize="12" text=""/>
+<mx:Button id="selectButton" click="browser()" x="0" y="8" label="Browse..." color="#000000" 
+	height="22" fontWeight="normal" width="87" fontSize="11" 
+	 textAlign="center" borderColor="#FFFFFF" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #6A6A6A]"/>
+	    <mx:ProgressBar x="-26" y="10" width="358" height="20" labelPlacement="center" id="uploadProgressBar" visible="false" mode="manual" label="Uploading..."
+	    	 barColor="#C4CF00" color="#FFFFFF" borderColor="#000000" trackColors="#000000"
+	    	 fontWeight="normal"/>
     
 </mx:Application>
